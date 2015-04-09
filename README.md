@@ -24,6 +24,9 @@ Installation
 	# Bitgo::V1::Api::LIVE : https://bitgo.com/api/v1
 	# Bitgo::V1::Api::EXPRESS : http://127.0.0.1:3080/api/v1
 
+	# If you have your custom bitgo express end point, you may use it
+	api = Bitgo::V1::Api.new('https://my-bitgo-express-endpoint.com')
+
 
 ### User API ###
 
