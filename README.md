@@ -57,7 +57,7 @@ Installation
 	api.get_wallet(wallet_id: 'xx')
 	api.list_wallet_addresses(walet_id: 'xx')
 	api.create_address(wallet_id: 'xx', chain: 'xx')
-	api.send_coins_to_address(address: 'address', amount: 'xx', wallet_passphrase: 'xx')
+	api.send_coins_to_address(wallet_id: 'xx', address: 'address', amount: 'xx', wallet_passphrase: 'xx')
 
 ### Webhooks API ###
 

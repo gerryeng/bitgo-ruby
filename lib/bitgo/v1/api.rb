@@ -246,8 +246,9 @@ module Bitgo
 				call :post, '/wallet/' + wallet_id + '/address/' + chain
 			end
 
-			def send_coins_to_address(address: address, amount: amount, wallet_passphrase: wallet_passphrase, min_confirmations: min_confirmations, fee: fee)
+			def send_coins_to_address(wallet_id: wallet_id, address: address, amount: amount, wallet_passphrase: wallet_passphrase, min_confirmations: min_confirmations, fee: fee)
 				call :post, '/sendcoins', {
+					wallet_id: wallet_id,
 					address: address,
 					amount: amount,
 					wallet_passphrase: wallet_passphrase,
