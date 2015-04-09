@@ -3,7 +3,7 @@ Bitgo Ruby Gem
 
 Lightweight wrapper of Bitgo and Bitgo Express REST API.
 
-Note: This wrapper is work in progress and does not cover every API end point. Unit tests will be added.
+Note: This wrapper is work in progress and does not cover every API yet.
 
 BitGo Documentation: https://www.bitgo.com/api/
 
@@ -75,3 +75,8 @@ Installation
 
 * [Gerry Eng](https://www.github.com/gerryeng)
 * [Pramodh Rai](https://www.github.com/pramodhgit)
+
+## Todo ##
+
+* Cover all APIs
+* Unit Tests
