@@ -19,10 +19,13 @@ Installation
 	api = Bitgo::V1::Api.new(Bitgo::V1::Api::TEST )
 	api.session_token = "your session token"
 
-	# Endpoints
+	# Available pre-defined API end points
 	# Bitgo::V1::Api::TEST : https://test.bitgo.com/api/v1
 	# Bitgo::V1::Api::LIVE : https://bitgo.com/api/v1
 	# Bitgo::V1::Api::EXPRESS : http://127.0.0.1:3080/api/v1
+
+
+### Custom Endpoint ###
 
 	# If you have a custom bitgo express end point, you may use it
 	api = Bitgo::V1::Api.new('https://my-bitgo-express-endpoint.com')
