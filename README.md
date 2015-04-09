@@ -71,7 +71,7 @@ Installation
 	api.decrypt(input: 'string to decrypt, output of encrypt()', password: 'password to decrypt')
 	api.verify_address(address: 'xx')
 
-### Contributors ###
+## Contributors ##
 
-	* Gerry Eng
-	* Pramodh Rai
+* [Gerry Eng](https://www.github.com/gerryeng)
+* [Pramodh Rai](https://www.github.com/pramodhgit)
