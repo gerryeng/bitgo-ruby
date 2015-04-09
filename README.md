@@ -72,3 +72,6 @@ Installation
 	api.verify_address(address: 'xx')
 
 ### Contributors ###
+
+	* Gerry Eng
+	* Pramodh Rai
