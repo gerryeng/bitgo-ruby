@@ -13,7 +13,7 @@ Installation
 	gem install bitgo
 
 
-### Usage ###
+# Usage #
 
 	# Setup an api instance
 	api = Bitgo::V1::Api.new(Bitgo::V1::Api::TEST )
