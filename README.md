@@ -3,6 +3,8 @@ Bitgo Ruby Gem
 
 Lightweight wrapper of Bitgo and Bitgo Express REST API.
 
+Note: This wrapper does not cover every 
+
 BitGo Documentation: https://www.bitgo.com/api/
 
 Installation
@@ -13,14 +15,14 @@ Installation
 
 ### Usage ###
 
-	# Endpoints
-	end_point = Bitgo::V1::Api::TEST
-	# end_point = Bitgo::V1::Api::LIVE
-	# end_point = Bitgo::V1::Api::EXPRESS
-
 	# Setup an api instance
-	api = Bitgo::V1::Api.new(end_point)
+	api = Bitgo::V1::Api.new(Bitgo::V1::Api::TEST )
 	api.session_token = "your session token"
+
+	# Endpoints
+	# Bitgo::V1::Api::TEST : https://test.bitgo.com/api/v1
+	# Bitgo::V1::Api::LIVE : https://bitgo.com/api/v1
+	# Bitgo::V1::Api::EXPRESS : http://127.0.0.1:3080/api/v1
 
 
 ### User API ###
@@ -39,7 +41,6 @@ Installation
 	api.create_keychains(seed)
 	api.add_keychain(xpub: 'xx', encrypted_xprv: 'xx')
 	api.create_bitgo_keychain
-
 
 ### Address Labels API ###
 
@@ -69,3 +70,5 @@ Installation
 	api.encrypt(input: 'string to encrypt, usually xprv', password: 'password to encrypt')
 	api.decrypt(input: 'string to decrypt, output of encrypt()', password: 'password to decrypt')
 	api.verify_address(address: 'xx')
+
+### Contributors ###
