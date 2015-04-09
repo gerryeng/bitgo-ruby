@@ -1,7 +1,7 @@
 Bitgo Ruby Gem
 ===============
 
-Lightweight wrapper of Bitgo and Bitgo Express REST API.
+Lightweight wrapper for Bitgo and Bitgo Express REST API.
 
 Note: This wrapper is work in progress and does not cover every API yet.
 
