@@ -273,7 +273,7 @@ module Bitgo
 				add_webhook_params = {
 					type: type,
 					url: url,
-					confirmations: confirmations
+					numConfirmations: confirmations
 				}
 				call :post, '/wallet/' + wallet_id + '/webhooks', add_webhook_params
 			end
