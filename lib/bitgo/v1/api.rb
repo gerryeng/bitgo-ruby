@@ -178,7 +178,7 @@ module Bitgo
 			#         "unconfirmedReceives" => 0,
 			#            "pendingApprovals" => []
 			#     },
-			#       "userKeychain" => { 
+			#       "userKeychain" => {
 			#                  "xpub" => "xpub661MyMwAqRbcF5jq3P7NkbMfFK9HDEYppZXxzmAsid5AvAPF1UyN1vsuePn9HNy3ZgYgUaANt1tkpxtZ2NLxUp1qeiPApMNu2uCJivmEDob",
 			#                  "xprv" => "xprv9s21ZrQH143K2bfMwMaNPTQvhHJnompyTLcNCNmGAHYC3N46Twf7U8ZRo7isyYM7c5KriFYPdMnpB3CL9sKWyJYjQNri6mVNEvFXFZGx8J8",
 			#         "encryptedXprv" => "{\"iv\":\"EnVDttt82SOMdk5+nxl6Yg==\",\"v\":1,\"iter\":10000,\"ks\":256,\"ts\":64,\"mode\":\"ccm\",\"adata\":\"\",\"cipher\":\"aes\",\"salt\":\"6E6KxZSKJ1U=\",\"ct\":\"PPIBVErcWkBUTl5ceqUulvDLsbZl17fhLt1CFnsA6Ay9R9NU6utNxst9SvcaeMEwItdSTUOfWvg7rokpR+0g8yHsqouf3qCiqk9RZLy0jKReje5/SC2J5SPp6yIsfT8q0y8QwKjVNx2FULLpJeHQ9yv/+TE+lvo=\"}"
@@ -219,8 +219,8 @@ module Bitgo
 			end
 
 			# Lookup wallet information, returning the wallet model including balances, permissions etc. The ID of a wallet is its first receiving address (/0/0)
-			# 
-			# Response: 
+			#
+			# Response:
 			# id				id of the wallet (also the first receiving address)
 			# label				the wallet label, as shown in the UI
 			# index				the index of the address within the chain (0, 1, 2, …)
@@ -231,7 +231,7 @@ module Bitgo
 			# confirmedBalance	the confirmed balance
 			# balance	the balance, including transactions with 0 confirmations
 			def get_wallet(wallet_id: wallet_id)
-				call :get, '/wallet/' + wallet_id 
+				call :get, '/wallet/' + wallet_id
 			end
 
 			# Gets a list of addresses which have been instantiated for a wallet using the New Address API.
@@ -258,13 +258,13 @@ module Bitgo
 			end
 
 			def send_coins_to_multiple_addresses()
-				
+
 			end
 
 			###############
 			# Webhook APIs
 			###############
-			# Adds a Webhook that will result in a HTTP callback at the specified URL from BitGo when events are triggered. There is a limit of 5 Webhooks of each type per wallet. 
+			# Adds a Webhook that will result in a HTTP callback at the specified URL from BitGo when events are triggered. There is a limit of 5 Webhooks of each type per wallet.
 			#
 			# type				string	(Required)	type of Webhook, e.g. transaction
 			# url				string	(Required)	valid http/https url for callback requests
@@ -335,7 +335,7 @@ module Bitgo
 				request = nil
 				if method == :get
 					request = Net::HTTP::Get.new(uri.request_uri)
-					
+
 				elsif method == :post
 					request = Net::HTTP::Post.new(uri.request_uri)
 				elsif method == :delete
