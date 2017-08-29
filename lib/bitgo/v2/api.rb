@@ -135,6 +135,7 @@ module Bitgo
 
 
       def remove_webhook(wallet_id: wallet_id, type: type, url: url, coin: COIN_BTC)
+        validate_coin(coin)
         remove_webhook_params = {
           type: type,
           url: url
@@ -142,8 +143,9 @@ module Bitgo
         call :delete, "#{coin}/wallet/#{wallet_id}/webhooks", remove_webhook_params
       end
 
-      def list_webhooks(wallet_id: wallet_id)
-        call :get, "/wallet/#{wallet_id}/webhooks"
+      def list_webhooks(wallet_id: wallet_id, coin: COIN_BTC)
+        validate_coin(coin)
+        call :get, "#{coin}/wallet/#{wallet_id}/webhooks"
       end
 
     private
