@@ -8,7 +8,7 @@ module Bitgo
 			attr_accessor :session_token
 
 			TEST = 'https://test.bitgo.com/api/v1'
-			LIVE = 'https://bitgo.com/api/v1'
+			LIVE = 'https://www.bitgo.com/api/v1'
 			EXPRESS = 'http://127.0.0.1:3080/api/v1'
 
 			def initialize(end_point)
@@ -312,7 +312,7 @@ module Bitgo
 			end
 
 
-			private
+		protected
 
 			###############
 			# HTTP call
