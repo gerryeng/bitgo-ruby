@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'bitgo'
-  s.version     = '0.0.3'
+  s.version     = '0.0.4'
   s.date        = '2015-04-09'
   s.summary     = "Ruby wrapper for Bitgo and Bitgo Express API"
   s.description = "Ruby wrapper for Bitgo and Bitgo Express API"
