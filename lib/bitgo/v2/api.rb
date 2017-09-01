@@ -1,8 +1,6 @@
 module Bitgo
   module V2
 
-    class ApiError < RuntimeError; end
-
     class Api < Bitgo::V1::Api
 
       attr_accessor :session_token
