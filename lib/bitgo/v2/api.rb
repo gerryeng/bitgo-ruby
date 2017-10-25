@@ -122,6 +122,63 @@ module Bitgo
 
       alias :add_address :create_address
 
+      # Send Transaction to Many (BitGo Express)
+      #
+      # Parameter                     Type     Required  Description
+      # recipients                    Array    Yes       Objects describing the receive address and amount.
+      # walletPassphrase              String   Yes       Passphrase to decrypt the wallet’s private key.
+      # minValue                      Integer  No        Ignore unspents smaller than this amount of satoshis
+      # maxValue                      Integer  No        Ignore unspents larger than this amount of satoshis
+      # sequenceId                    String   No        A custom user-provided string that can be used to uniquely identify the state of this transaction before and after signing
+      # feeRate                       Integer  No        The desired fee rate for the transaction in satoshis/kb
+      # minConfirms                   Integer  No        The required number of confirmations for each transaction input
+      # enforceMinConfirmsForChange   Boolean  No        Whether to enforce the required number of confirmations for change outputs
+      # targetWalletUnspents          Integer  No
+      #
+      # @recipients Array
+      # Each recipient object has the following key-value-pairs:
+      # Key        Type    Value
+      # address    String  Destination address
+      # amount     Integer Satoshis to send in transaction
+      #            String  String representation of satoshis to send in transaction
+      # gasPrice   Integer No
+      #
+      # Response
+      #
+      # Returns the newly created transaction description object.
+      #
+      # Field    Description
+      # txid     Blockchain transaction ID
+      # status   Status of transaction
+
+      def send_many(coin:, wallet_id:, recipients:, wallet_passphrase:,
+        min_value: nil,
+        max_value: nil,
+        sequence_id: nil,
+        fee_rate: nil,
+        min_confirms: nil,
+        enforce_min_confirms_for_change: nil,
+        target_wallet_unspents: nil,
+        fee_tx_confirm_target: nil
+      )
+        validate_coin!(coin)
+
+        params = {
+          walletPassphrase: wallet_passphrase,
+          recipients: recipients
+        }
+
+        params[:min_value] = min_value unless min_value.nil?
+        params[:max_value] = max_value unless max_value.nil?
+        params[:sequence_id] = sequence_id unless sequence_id.nil?
+        params[:fee_rate] = fee_rate unless fee_rate.nil?
+        params[:min_confirms] = min_confirms unless min_confirms.nil?
+        params[:enforce_min_confirms_for_change] = enforce_min_confirms_for_change unless enforce_min_confirms_for_change.nil?
+        params[:target_wallet_unspents] = target_wallet_unspents unless target_wallet_unspents.nil?
+
+        call :post, "/#{coin}/wallet/#{wallet_id}/sendmany", params
+      end
+
       ###############
       # Webhook APIs
       ###############
