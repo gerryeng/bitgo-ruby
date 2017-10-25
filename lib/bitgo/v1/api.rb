@@ -46,10 +46,6 @@ module Bitgo
 				call :post, '/user/sendotp', forceSMS: force_sms
 			end
 
-			def session_information
-				call :get, '/user/session'
-			end
-
 			def unlock(otp:, duration_seconds:)
 				unlock_params = {
 					otp: otp,
