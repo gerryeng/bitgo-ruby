@@ -7,7 +7,7 @@ module Bitgo
 
       TEST = 'https://test.bitgo.com/api/v2'
       LIVE = 'https://www.bitgo.com/api/v2'
-      EXPRESS = 'http://127.0.0.1:3080/api/v1'
+      EXPRESS = 'http://127.0.0.1:3080/api/v2'
 
       COINS = [
         COIN_BTC  = 'btc',  # Bitcoin Production  Production
