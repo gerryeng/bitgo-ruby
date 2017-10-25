@@ -50,7 +50,7 @@ module Bitgo
         end
       end
 
-      def add_keychain(xpub: xpub, encrypted_xprv: encrypted_xprv, coin: COIN_BTC)
+      def add_keychain(xpub:, encrypted_xprv:, coin: COIN_BTC)
         validate_coin!(coin)
         call :post, "/#{coin}/keychain", { xpub: xpub, encrypted_xprv: encrypted_xprv }
       end
@@ -131,7 +131,7 @@ module Bitgo
       # type        string  (Required)  type of Webhook, e.g. transaction
       # url       string  (Required)  valid http/https url for callback requests
       # numConfirmations  integer (Optional)  number of confirmations before triggering the webhook. If 0 or unspecified, requests will be sent to the callback endpoint will be called when the transaction is first seen and when it is confirmed.
-      def add_webhook(wallet_id:, type: type, url: url, confirmations: confirmations, coin: COIN_BTC)
+      def add_webhook(wallet_id:, type:, url:, confirmations: 0, coin: COIN_BTC)
         validate_coin!(coin)
         add_webhook_params = {
           type: type,
@@ -142,7 +142,7 @@ module Bitgo
       end
 
 
-      def remove_webhook(wallet_id:, type: type, url: url, coin: COIN_BTC)
+      def remove_webhook(wallet_id:, type:, url:, coin: COIN_BTC)
         validate_coin!(coin)
         remove_webhook_params = {
           type: type,
