@@ -251,8 +251,65 @@ module Bitgo
 				}
 			end
 
-			def send_coins_to_multiple_addresses()
+			# Send Transaction to Many (BitGo Express)
+			#
+			# Parameter                     Type     Required  Description
+			# recipients                    Array    Yes       Objects describing the receive address and amount.
+			# walletPassphrase              String   Yes       Passphrase to decrypt the wallet’s private key.
+			# minValue                      Integer  No        Ignore unspents smaller than this amount of satoshis
+			# maxValue                      Integer  No        Ignore unspents larger than this amount of satoshis
+			# sequenceId                    String   No        A custom user-provided string that can be used to uniquely identify the state of this transaction before and after signing
+			# feeRate                       Integer  No        The desired fee rate for the transaction in satoshis/kb
+			# minConfirms                   Integer  No        The required number of confirmations for each transaction input
+			# enforceMinConfirmsForChange   Boolean  No        Whether to enforce the required number of confirmations for change outputs
+			# targetWalletUnspents          Integer  No
+			#
+			# @recipients Array
+			# Each recipient object has the following key-value-pairs:
+			# Key        Type    Value
+			# address    String  Destination address
+			# amount     Integer Satoshis to send in transaction
+			#            String  String representation of satoshis to send in transaction
+			# gasPrice   Integer No
+			#
+			# Response
+			#
+			# Returns the newly created transaction description object.
+			#
+			# Field    Description
+			# txid     Blockchain transaction ID
+			# status   Status of transaction
 
+			def send_many(wallet_id:, recipients:, wallet_passphrase:,
+			  min_value: nil,
+			  max_value: nil,
+			  sequence_id: nil,
+			  fee_rate: nil,
+			  max_fee_rate: nil,
+			  min_confirms: nil,
+			  enforce_min_confirms_for_change: nil,
+			  target_wallet_unspents: nil,
+			  fee_tx_confirm_target: nil,
+			  message: nil
+			)
+
+			  params = {
+			    walletPassphrase: wallet_passphrase,
+			    recipients: recipients
+			  }
+
+			  params[:minValue] = min_value unless min_value.nil?
+			  params[:maxValue] = max_value unless max_value.nil?
+			  params[:sequenceId] = sequence_id unless sequence_id.nil?
+			  params[:feeRate] = fee_rate unless fee_rate.nil?
+			  params[:maxFeeRate] = max_fee_rate unless max_fee_rate.nil?
+			  params[:minConfirms] = min_confirms unless min_confirms.nil?
+			  params[:enforceMinConfirmsForChange] = enforce_min_confirms_for_change unless enforce_min_confirms_for_change.nil?
+			  params[:targetWalletUnspents] = target_wallet_unspents unless target_wallet_unspents.nil?
+			  params[:feeTxConfirmTarget] = fee_tx_confirm_target unless fee_tx_confirm_target.nil?
+			  params[:message] = message unless message.nil?
+
+			  call :post, "/wallet/#{wallet_id}/sendmany", params
 			end
 
 			###############
@@ -347,6 +404,7 @@ module Bitgo
 
 				# Add authentication header
 				if with_auth_token == true && @session_token.nil? == false
+					# request.add_field('Authorization', 'Bearer ' + @session_token)
 					request.add_field('Authorization', 'Bearer ' + @session_token)
 				end
 
