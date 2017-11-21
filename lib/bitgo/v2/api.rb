@@ -175,6 +175,7 @@ module Bitgo
         params[:min_confirms] = min_confirms unless min_confirms.nil?
         params[:enforce_min_confirms_for_change] = enforce_min_confirms_for_change unless enforce_min_confirms_for_change.nil?
         params[:target_wallet_unspents] = target_wallet_unspents unless target_wallet_unspents.nil?
+        params[:feeTxConfirmTarget] = fee_tx_confirm_target unless fee_tx_confirm_target.nil?
 
         call :post, "/#{coin}/wallet/#{wallet_id}/sendmany", params
       end
