@@ -240,6 +240,30 @@ module Bitgo
 				call :post, '/wallet/' + wallet_id + '/address/' + chain
 			end
 
+			# List Wallet Unspents
+			#                    Required?
+			# target			 number	   No	  The API will attempt to return enough unspents to accumulate to at least this amount (in satoshis).
+			# skip				 number	   No	  The starting index number to list from. Default is 0.
+			# limit				 number	   No	  Max number of results to return in a single call (default=100, max=250)
+			# minConfirms	 number	   No	  Only include unspents with at least this many confirmations.
+			# minSize			 number	   No	  Only include unspents that are at least this many satoshis.
+			# segwit			 boolean	 No	  Defaults to false, but is passed and set to true automatically from SDK version 4.3.0 forward.
+			#
+			# Response:
+			# tx_hash						The hash of the unspent input
+			# tx_output_n				The index of the unspent input from tx_hash
+			# value							The value, in satoshis of the unspent input
+			# script						Output script hash (in hex format)
+			# redeemScript			The redeem script
+			# chainPath					The BIP32 path of the unspent output relative to the wallet
+			# confirmations			Number of blocks seen on and after the unspent transaction was included in a block
+			# isChange					Boolean indicating this is an output from a previous spend originating on this wallet, and may be safe to spend even with 0 confirmations
+			# instant						Boolean indicating if this unspent can be used to create a BitGo Instant transaction guaranteed against double spends
+			# replayProtection	string Array of blockchains which this unspent will not be replayed on
+			def unspents(wallet_id: default_wallet_id)
+				call :post, '/wallet/' + wallet_id + '/unspents'
+			end
+
 			def send_coins_to_address(wallet_id: default_wallet_id, address:, amount:, wallet_passphrase: default_wallet_passphrase, min_confirmations: nil, fee: nil)
 				call :post, '/sendcoins', {
 					wallet_id: wallet_id,
