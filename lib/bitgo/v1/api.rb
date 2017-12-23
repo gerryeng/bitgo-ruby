@@ -3,7 +3,7 @@ module Bitgo
 
 		class Api
 
-			attr_accessor :session_token
+			attr_accessor :session_token, :default_wallet_id, :default_wallet_passphrase
 
 			TEST = 'https://test.bitgo.com/api/v1'
 			LIVE = 'https://www.bitgo.com/api/v1'
@@ -97,15 +97,15 @@ module Bitgo
 				call :get, '/labels'
 			end
 
-			def list_labels_for_wallet(wallet_id:)
+			def list_labels_for_wallet(wallet_id: default_wallet_id)
 				call :get, '/labels/' + wallet_id
 			end
 
-			def set_label(wallet_id:, address:, label:)
+			def set_label(wallet_id: default_wallet_id, address:, label:)
 				call :put, '/labels/' + wallet_id + '/' + address, { label: label }
 			end
 
-			def delete_label(wallet_id:, address:)
+			def delete_label(wallet_id: default_wallet_id, address:)
 				call :delete, '/labels/' + wallet_id + '/' + address
 			end
 
@@ -224,23 +224,23 @@ module Bitgo
 			# pendingApprovals	pending transaction approvals on the wallet
 			# confirmedBalance	the confirmed balance
 			# balance	the balance, including transactions with 0 confirmations
-			def get_wallet(wallet_id:)
+			def get_wallet(wallet_id: default_wallet_id)
 				call :get, '/wallet/' + wallet_id
 			end
 
 			# Gets a list of addresses which have been instantiated for a wallet using the New Address API.
-			def list_wallet_addresses(wallet_id:)
+			def list_wallet_addresses(wallet_id: default_wallet_id)
 				call :get, '/wallet/' + wallet_id + '/addresses'
 			end
 
 			# Creates a new address for an existing wallet. BitGo wallets consist of two independent chains of addresses, designated 0 and 1.
 			# The 0-chain is typically used for receiving funds, while the 1-chain is used internally for creating change when spending from a wallet.
 			# It is considered best practice to generate a new receiving address for each new incoming transaction, in order to help maximize privacy.
-			def create_address(wallet_id:, chain: 0)
+			def create_address(wallet_id: default_wallet_id, chain: 0)
 				call :post, '/wallet/' + wallet_id + '/address/' + chain
 			end
 
-			def send_coins_to_address(wallet_id:, address:, amount:, wallet_passphrase:, min_confirmations: nil, fee: nil)
+			def send_coins_to_address(wallet_id: default_wallet_id, address:, amount:, wallet_passphrase: default_wallet_passphrase, min_confirmations: nil, fee: nil)
 				call :post, '/sendcoins', {
 					wallet_id: wallet_id,
 					address: address,
@@ -280,7 +280,9 @@ module Bitgo
 			# txid     Blockchain transaction ID
 			# status   Status of transaction
 
-			def send_many(wallet_id:, recipients:, wallet_passphrase:,
+			def send_many(wallet_id: default_wallet_id,
+				wallet_passphrase: default_wallet_passphrase,
+			  recipients:,
 			  min_value: nil,
 			  max_value: nil,
 			  sequence_id: nil,
@@ -320,7 +322,7 @@ module Bitgo
 			# type				string	(Required)	type of Webhook, e.g. transaction
 			# url				string	(Required)	valid http/https url for callback requests
 			# numConfirmations	integer	(Optional)	number of confirmations before triggering the webhook. If 0 or unspecified, requests will be sent to the callback endpoint will be called when the transaction is first seen and when it is confirmed.
-			def add_webhook(wallet_id:, type:, url:, confirmations: 0)
+			def add_webhook(wallet_id: default_wallet_id, type:, url:, confirmations: 0)
 				add_webhook_params = {
 					type: type,
 					url: url,
@@ -330,7 +332,7 @@ module Bitgo
 			end
 
 
-			def remove_webhook(wallet_id:, type:, url:)
+			def remove_webhook(wallet_id: default_wallet_id, type:, url:)
 				remove_webhook_params = {
 					type: type,
 					url: url
@@ -338,7 +340,7 @@ module Bitgo
 				call :delete, '/wallet/' + wallet_id + '/webhooks', remove_webhook_params
 			end
 
-			def list_webhooks(wallet_id:)
+			def list_webhooks(wallet_id: default_wallet_id)
 				call :get, '/wallet/' + wallet_id + '/webhooks'
 			end
 
