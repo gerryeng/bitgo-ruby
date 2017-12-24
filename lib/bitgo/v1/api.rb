@@ -89,6 +89,10 @@ module Bitgo
 				call :post, '/keychain/bitgo'
 			end
 
+			def get_keychain(xpub:)
+				call :post, "/keychain/#{xpub}"
+			end
+
 			###############
 			# Address Labels API
 			###############
@@ -240,30 +244,6 @@ module Bitgo
 				call :post, '/wallet/' + wallet_id + '/address/' + chain
 			end
 
-			# List Wallet Unspents
-			#                    Required?
-			# target			 number	   No	  The API will attempt to return enough unspents to accumulate to at least this amount (in satoshis).
-			# skip				 number	   No	  The starting index number to list from. Default is 0.
-			# limit				 number	   No	  Max number of results to return in a single call (default=100, max=250)
-			# minConfirms	 number	   No	  Only include unspents with at least this many confirmations.
-			# minSize			 number	   No	  Only include unspents that are at least this many satoshis.
-			# segwit			 boolean	 No	  Defaults to false, but is passed and set to true automatically from SDK version 4.3.0 forward.
-			#
-			# Response:
-			# tx_hash						The hash of the unspent input
-			# tx_output_n				The index of the unspent input from tx_hash
-			# value							The value, in satoshis of the unspent input
-			# script						Output script hash (in hex format)
-			# redeemScript			The redeem script
-			# chainPath					The BIP32 path of the unspent output relative to the wallet
-			# confirmations			Number of blocks seen on and after the unspent transaction was included in a block
-			# isChange					Boolean indicating this is an output from a previous spend originating on this wallet, and may be safe to spend even with 0 confirmations
-			# instant						Boolean indicating if this unspent can be used to create a BitGo Instant transaction guaranteed against double spends
-			# replayProtection	string Array of blockchains which this unspent will not be replayed on
-			def unspents(wallet_id: default_wallet_id)
-				call :post, '/wallet/' + wallet_id + '/unspents'
-			end
-
 			def send_coins_to_address(wallet_id: default_wallet_id, address:, amount:, wallet_passphrase: default_wallet_passphrase, min_confirmations: nil, fee: nil)
 				call :post, '/sendcoins', {
 					wallet_id: wallet_id,
@@ -339,6 +319,54 @@ module Bitgo
 			end
 
 			###############
+			# Wallets API Advanced
+			###############
+
+			# List Wallet Unspents
+			#                    Required?
+			# target			 number	   No	  The API will attempt to return enough unspents to accumulate to at least this amount (in satoshis).
+			# skip				 number	   No	  The starting index number to list from. Default is 0.
+			# limit				 number	   No	  Max number of results to return in a single call (default=100, max=250)
+			# minConfirms	 number	   No	  Only include unspents with at least this many confirmations.
+			# minSize			 number	   No	  Only include unspents that are at least this many satoshis.
+			# segwit			 boolean	 No	  Defaults to false, but is passed and set to true automatically from SDK version 4.3.0 forward.
+			#
+			# Response:
+			# tx_hash						The hash of the unspent input
+			# tx_output_n				The index of the unspent input from tx_hash
+			# value							The value, in satoshis of the unspent input
+			# script						Output script hash (in hex format)
+			# redeemScript			The redeem script
+			# chainPath					The BIP32 path of the unspent output relative to the wallet
+			# confirmations			Number of blocks seen on and after the unspent transaction was included in a block
+			# isChange					Boolean indicating this is an output from a previous spend originating on this wallet, and may be safe to spend even with 0 confirmations
+			# instant						Boolean indicating if this unspent can be used to create a BitGo Instant transaction guaranteed against double spends
+			# replayProtection	string Array of blockchains which this unspent will not be replayed on
+			def unspents(wallet_id: default_wallet_id)
+				call :get, '/wallet/' + wallet_id + '/unspents'
+			end
+
+			def create_transaction(wallet_id: default_wallet_id, params: {})
+				call :post, '/wallet/' + wallet_id + '/createtransaction', params
+			end
+
+			# Sign Transaction
+			#
+			# transactionHex	string									Yes		The unsigned transaction, in hex string form
+			# unspents	 			array										Yes		Array of unspents objects, which contain the chainpath and redeemScript.
+			# keychain				keychain object					Yes		The decrypted keychain (object), with available xprv property.
+			# signingKey			private 	key (string)	No		For legacy safe wallets, the private key string.
+			# validate				boolean									No		Extra verification of signatures (which are always verified server-side), defaults to global configuration.
+
+			def sign_transaction(wallet_id: default_wallet_id, params: {})
+				call :post, '/wallet/' + wallet_id + '/signtransaction', params
+			end
+
+			def send_transaction(params: {})
+				call :post, '/tx/send', params
+			end
+
+			###############
 			# Webhook APIs
 			###############
 			# Adds a Webhook that will result in a HTTP callback at the specified URL from BitGo when events are triggered. There is a limit of 5 Webhooks of each type per wallet.
@@ -376,7 +404,7 @@ module Bitgo
 				call :post, '/encrypt', { input: input, password: password }
 			end
 
-			def decrypt(input:, password:)
+			def decrypt(input:, password: default_wallet_passphrase)
 				call :post, '/decrypt', { input: input, password: password }
 			end
 
@@ -386,6 +414,16 @@ module Bitgo
 					address: address
 				}
 				call :post, '/verifyaddress', verify_address_params
+			end
+
+			###############
+			# Blockchain data (Via Bitgo Express API)
+			###############
+
+			# Get Transaction Details
+
+			def transaction(tx_hash)
+				call :get, "/tx/#{tx_hash}"
 			end
 
 
