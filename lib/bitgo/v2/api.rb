@@ -150,32 +150,39 @@ module Bitgo
       # Field    Description
       # txid     Blockchain transaction ID
       # status   Status of transaction
-
-      def send_many(coin:, wallet_id:, recipients:, wallet_passphrase:,
+      def send_many(wallet_id: default_wallet_id,
+        wallet_passphrase: default_wallet_passphrase,
+        recipients:,
         min_value: nil,
         max_value: nil,
         sequence_id: nil,
         fee_rate: nil,
+        max_fee_rate: nil,
         min_confirms: nil,
         enforce_min_confirms_for_change: nil,
         target_wallet_unspents: nil,
-        fee_tx_confirm_target: nil
+        fee_tx_confirm_target: nil,
+        message: nil,
+        coin: nil
       )
-        validate_coin!(coin)
 
         params = {
           walletPassphrase: wallet_passphrase,
           recipients: recipients
         }
 
-        params[:min_value] = min_value unless min_value.nil?
-        params[:max_value] = max_value unless max_value.nil?
-        params[:sequence_id] = sequence_id unless sequence_id.nil?
-        params[:fee_rate] = fee_rate unless fee_rate.nil?
-        params[:min_confirms] = min_confirms unless min_confirms.nil?
-        params[:enforce_min_confirms_for_change] = enforce_min_confirms_for_change unless enforce_min_confirms_for_change.nil?
-        params[:target_wallet_unspents] = target_wallet_unspents unless target_wallet_unspents.nil?
+        validate_coin!(coin)
+
+        params[:minValue] = min_value unless min_value.nil?
+        params[:maxValue] = max_value unless max_value.nil?
+        params[:sequenceId] = sequence_id unless sequence_id.nil?
+        params[:feeRate] = fee_rate unless fee_rate.nil?
+        params[:maxFeeRate] = max_fee_rate unless max_fee_rate.nil?
+        params[:minConfirms] = min_confirms unless min_confirms.nil?
+        params[:enforceMinConfirmsForChange] = enforce_min_confirms_for_change unless enforce_min_confirms_for_change.nil?
+        params[:targetWalletUnspents] = target_wallet_unspents unless target_wallet_unspents.nil?
         params[:feeTxConfirmTarget] = fee_tx_confirm_target unless fee_tx_confirm_target.nil?
+        params[:message] = message unless message.nil?
 
         call :post, "/#{coin}/wallet/#{wallet_id}/sendmany", params
       end

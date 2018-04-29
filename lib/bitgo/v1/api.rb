@@ -296,7 +296,8 @@ module Bitgo
         enforce_min_confirms_for_change: nil,
         target_wallet_unspents: nil,
         fee_tx_confirm_target: nil,
-        message: nil
+        message: nil,
+        coin: nil
       )
 
         params = {
