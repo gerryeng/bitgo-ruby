@@ -14,6 +14,8 @@ module Bitgo
         COIN_TBTC = 'tbtc', # Bitcoin Testnet3  Test
         COIN_ETH  = 'eth',  # Ethereum Production Production
         COIN_TETH = 'teth', # Ethereum Kovan Testnet  Test
+        COIN_BCH  = 'bch',  # Bitcoin Cash Production  Production
+        COIN_TBCH = 'tbch', # Bitcoin Cash Testnet  Test
         COIN_XRP  = 'xrp',  # Ripple Production Production
         COIN_TXRP = 'txrp', # Ripple Testnet  Test
         COIN_LTC  = 'ltc',  # Litecoin Production Production
