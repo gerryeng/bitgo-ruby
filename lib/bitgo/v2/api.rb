@@ -159,9 +159,19 @@ module Bitgo
         call :get, "/#{coin}/wallet/#{wallet_id}/tx"
       end
 
-      def get_wallet_transaction(wallet_id:, txid:, coin: COIN_BTC)
+      def get_wallet_transaction(wallet_id:, tx_id:, coin: COIN_BTC)
         validate_coin!(coin)
-        call :get, "/#{coin}/wallet/#{wallet_id}/tx/#{txid}"
+        call :get, "/#{coin}/wallet/#{wallet_id}/tx/#{tx_id}"
+      end
+
+      def list_wallet_transfers(wallet_id:, coin: COIN_BTC)
+        validate_coin!(coin)
+        call :get, "/#{coin}/wallet/#{wallet_id}/transfer"
+      end
+
+      def get_wallet_transfer(wallet_id:, tx_id:, coin: COIN_BTC)
+        validate_coin!(coin)
+        call :get, "/#{coin}/wallet/#{wallet_id}/transfer/#{tx_id}"
       end
 
       def create_address(wallet_id:, coin: COIN_BTC)
