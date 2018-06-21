@@ -121,6 +121,10 @@ module Bitgo
         call :get, '/wallet'
       end
 
+      def list_wallet_transactions(wallet_id: default_wallet_id)
+        call :get, "/wallet/#{wallet_id}/tx"
+      end
+
       # wallet_simple_create
       #
       # Note: Bitcoin Express API, will only work on Bitcoin Express Endpoint
