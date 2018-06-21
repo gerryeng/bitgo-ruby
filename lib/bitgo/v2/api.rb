@@ -107,12 +107,12 @@ module Bitgo
         call :get, "/#{coin}/wallet/#{wallet_id}/addresses"
       end
 
-      def list_walllet_transactions(wallet_id:, coin: COIN_BTC)
+      def list_wallet_transactions(wallet_id:, coin: COIN_BTC)
         validate_coin!(coin)
         call :get, "/#{coin}/wallet/#{wallet_id}/tx"
       end
 
-      def get_walllet_transaction(wallet_id:, txid:, coin: COIN_BTC)
+      def get_wallet_transaction(wallet_id:, txid:, coin: COIN_BTC)
         validate_coin!(coin)
         call :get, "/#{coin}/wallet/#{wallet_id}/tx/#{txid}"
       end
