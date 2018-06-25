@@ -154,9 +154,13 @@ module Bitgo
         call :get, "/#{coin}/wallet/#{wallet_id}/addresses"
       end
 
-      def list_wallet_transactions(wallet_id:, coin: COIN_BTC)
+      #Parameter 	Type 	  Required 	Description
+      #id        	String 	Yes      	ID of the wallet whose transactions to fetch.
+      #prevId 	  String 	No 	      Continue iterating (provided by nextBatchPrevId in the previous list result)
+      #allTokens 	Boolean No 	      Gets details of all token transactions associated with this wallet. Only valid for eth/teth.
+      def list_wallet_transactions(wallet_id:, coin: COIN_BTC, queries: nil)
         validate_coin!(coin)
-        call :get, "/#{coin}/wallet/#{wallet_id}/tx"
+        call :get, "/#{coin}/wallet/#{wallet_id}/tx" + generate_query(queries)
       end
 
       def get_wallet_transaction(wallet_id:, tx_id:, coin: COIN_BTC)
@@ -164,9 +168,13 @@ module Bitgo
         call :get, "/#{coin}/wallet/#{wallet_id}/tx/#{tx_id}"
       end
 
-      def list_wallet_transfers(wallet_id:, coin: COIN_BTC)
+      #Parameter 	Type   	Required 	Description
+      #id       	String 	Yes     	ID of the wallet whose transfers to fetch.
+      #prevId   	String 	No 	      Continue iterating from this prevId (provided by nextBatchPrevId in the previous list)
+      #allTokens 	Boolean	No 	      Gets transfers of all tokens associated with this wallet. Only valid for eth/teth.
+      def list_wallet_transfers(wallet_id:, coin: COIN_BTC, queries: nil)
         validate_coin!(coin)
-        call :get, "/#{coin}/wallet/#{wallet_id}/transfer"
+        call :get, "/#{coin}/wallet/#{wallet_id}/transfer" + generate_query(queries)
       end
 
       def get_wallet_transfer(wallet_id:, tx_id:, coin: COIN_BTC)

@@ -121,8 +121,15 @@ module Bitgo
         call :get, '/wallet'
       end
 
-      def list_wallet_transactions(wallet_id: default_wallet_id)
-        call :get, "/wallet/#{wallet_id}/tx"
+      #Parameter   	Type   	Required 	Description
+      #skip      	  number 	No 	      The starting index number to list from. Default is 0.
+      #limit 	      number 	No 	      Max number of results to return in a single call (default=25, max=250)
+      #compact 	    boolean No 	      Omit inputs and outputs in the transaction results
+      #minHeight 	  number 	No 	      A lower limit of blockchain height at which the transaction was confirmed. Does not filter unconfirmed transactions.
+      #maxHeight 	  number 	No 	      An upper limit of blockchain height at which the transaction was confirmed. Filters unconfirmed transactions if set.
+      #minConfirms  number 	No 	      Only shows transactions with at least this many confirmations, filters transactions that have fewer confirmations.
+      def list_wallet_transactions(wallet_id: default_wallet_id, queries: nil)
+        call :get, "/wallet/#{wallet_id}/tx" + generate_query(queries)
       end
 
       def get_wallet_transaction(wallet_id: default_wallet_id, tx_id:)
@@ -501,6 +508,15 @@ module Bitgo
         end
       end
 
+      def generate_query(queries)
+        return "" if queries.nil?
+        query = "?"
+        queries.each_with_index do |(key, value), index|
+          query += "&" if index > 0
+          query += "#{key.to_s}=#{value.to_s}"
+        end
+        return query
+      end
     end
 
   end
