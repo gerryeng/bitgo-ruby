@@ -230,6 +230,7 @@ module Bitgo
         target_wallet_unspents: nil,
         fee_tx_confirm_target: nil,
         message: nil,
+        comment: nil,
         coin: nil
       )
 
@@ -239,6 +240,9 @@ module Bitgo
         }
 
         validate_coin!(coin)
+        if (message && comment) and (message != comment)
+          raise "message: #{message} and comment: #{comment} are both present, but they differ"
+        end
 
         params[:minValue] = min_value unless min_value.nil?
         params[:maxValue] = max_value unless max_value.nil?
@@ -249,7 +253,8 @@ module Bitgo
         params[:enforceMinConfirmsForChange] = enforce_min_confirms_for_change unless enforce_min_confirms_for_change.nil?
         params[:targetWalletUnspents] = target_wallet_unspents unless target_wallet_unspents.nil?
         params[:feeTxConfirmTarget] = fee_tx_confirm_target unless fee_tx_confirm_target.nil?
-        params[:message] = message unless message.nil?
+        params[:comment] = comment unless comment.nil?
+        params[:comment] = message unless message.nil?
 
         call :post, "/#{coin}/wallet/#{wallet_id}/sendmany", params
       end
