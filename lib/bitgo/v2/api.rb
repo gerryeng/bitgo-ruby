@@ -34,7 +34,7 @@ module Bitgo
 
       def list_keychains(coin: COIN_BTC)
         validate_coin!(coin)
-        call :get, "/#{coin}/keychain"
+        call :get, "/#{coin}/key"
       end
 
       # Bitgo express function
@@ -60,6 +60,10 @@ module Bitgo
       def create_bitgo_keychain(coin: COIN_BTC)
         validate_coin!(coin)
         call :post, "/#{coin}/keychain/bitgo"
+      end
+
+      def get_keychain(keychain_id:, coin: COIN_BTC)
+        call :get, "/#{coin}/key/#{keychain_id}"
       end
 
       ###############
@@ -96,9 +100,52 @@ module Bitgo
       # pendingApprovals  pending transaction approvals on the wallet
       # confirmedBalance  the confirmed balance
       # balance the balance, including transactions with 0 confirmations
-      def get_wallet(wallet_id:, coin: COIN_BTC)
+      def get_wallet(wallet_id: default_wallet_id, coin: COIN_BTC)
         validate_coin!(COIN_BTC)
         call :get, "/#{coin}/wallet/#{wallet_id}"
+      end
+
+      # List Wallet Unspents
+      #                    Required?
+      # prevId       String   No  Continue iterating wallets from this prevId as provided by nextBatchPrevId in the previous list
+      # minValue     Integer  No  Ignore unspents smaller than this amount of satoshis
+      # maxValue     Integer  No  Ignore unspents larger than this amount of satoshis
+      # minHeight    Integer  No  Ignore unspents confirmed at a lower block height than the given minHeight
+      # minConfirms  Integer  No  Ignores unspents that have fewer than the given confirmations
+
+      # Response:
+
+      # id            The outpoint of the unspent (txid:vout)
+      # address       The address that owns this unspent
+      # value         Value of the unspent in satoshis
+      # valueString   Value of the unspent in satoshis in string format
+      # blockHeight   The height of the block that created this unspent
+      # date          The date the unspent was created
+      # wallet        The id of the wallet the unspent is in
+      # fromWallet    The id of the wallet the unspent came from (if it was sent from a BitGo wallet you’re a member on , null otherwise)
+      # chain         The address type and derivation path of the unspent (0 = normal unspent, 1 = change unspent, 10 = segwit unspent, 11 = segwit change unspent)
+      # index         The position of the address in this chain’s derivation path
+      # redeemScript  The script defining the criteria to be satisfied to spend this unspent
+      # isSegwit      A flag indicating whether this is a segwit unspent
+      # witnessScript
+
+      def unspents(wallet_id: default_wallet_id, coin: COIN_BTC)
+        call :get, "/#{coin}/wallet/#{wallet_id}/unspents"
+      end
+
+      def create_transaction(wallet_id: default_wallet_id, coin: COIN_BTC, params: {})
+        call :post, "/#{coin}/wallet/#{wallet_id}/tx/build", params
+      end
+
+      alias_method :build_transaction, :create_transaction
+
+      def sign_transaction(wallet_id: default_wallet_id, coin: COIN_BTC, params: {})
+        params[:walletPassphrase] ||= default_wallet_passphrase
+        call :post, "/#{coin}/wallet/#{wallet_id}/signtx", params
+      end
+
+      def send_transaction(wallet_id: default_wallet_id, coin: COIN_BTC, params: {})
+        call :post, "/#{coin}/wallet/#{wallet_id}/tx/send", params
       end
 
       # Gets a list of addresses which have been instantiated for a wallet using the New Address API.
@@ -221,6 +268,16 @@ module Bitgo
       def list_webhooks(wallet_id:, coin: COIN_BTC)
         validate_coin!(coin)
         call :get, "/#{coin}/wallet/#{wallet_id}/webhooks"
+      end
+
+      ###############
+      # Blockchain data (Via Bitgo Express API)
+      ###############
+
+      # Get Transaction Details
+
+      def transaction(tx_hash, coin: COIN_BTC, wallet_id: default_wallet_id)
+        call :get, "/#{coin}/wallet/#{wallet_id}/tx/#{tx_hash}"
       end
 
     private
