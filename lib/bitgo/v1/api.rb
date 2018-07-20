@@ -63,9 +63,9 @@ module Bitgo
       ###############
 
       # Query Parameters
-      # Parameter 	Type    	Required 	Description
-      # skip       	number 	  No      	The starting index number to list from. Default is 0.
-      # limit 	    number   	No 	      Max number of results to return in a single call (default=100, max=500)
+      # Parameter   Type     Required  Description
+      # skip        number   No        The starting index number to list from. Default is 0.
+      # limit       number   No        Max number of results to return in a single call (default=100, max=500)
       def list_keychains(params: {})
         call :get, '/keychain', params
       end
@@ -122,23 +122,23 @@ module Bitgo
       ###############
 
       # QUERY Parameters
-      # Parameter 	  Type  	Required 	Description
-      # enterpriseId 	string 	No      	Filter list by Enterprise ID
-      # getbalances 	boolean	No 	      Set to true to return the “balance” field for each wallet.
-      # limit 	      number 	No 	      Max number of results to return in a single call (default=25, max=250)
-      # skip 	        number 	No 	      The starting index number to list from. Default is 0.
+      # Parameter     Type     Required   Description
+      # enterpriseId  string   No         Filter list by Enterprise ID
+      # getbalances   boolean  No         Set to true to return the “balance” field for each wallet.
+      # limit         number   No         Max number of results to return in a single call (default=25, max=250)
+      # skip          number   No         The starting index number to list from. Default is 0.
       def list_wallets(params: {})
         call :get, '/wallet', params
       end
 
       # QUERY Parameters
-      # Parameter   	Type   	Required 	Description
-      # skip      	  number 	No 	      The starting index number to list from. Default is 0.
-      # limit 	      number 	No 	      Max number of results to return in a single call (default=25, max=250)
-      # compact 	    boolean No 	      Omit inputs and outputs in the transaction results
-      # minHeight 	  number 	No 	      A lower limit of blockchain height at which the transaction was confirmed. Does not filter unconfirmed transactions.
-      # maxHeight 	  number 	No 	      An upper limit of blockchain height at which the transaction was confirmed. Filters unconfirmed transactions if set.
-      # minConfirms  number 	No 	      Only shows transactions with at least this many confirmations, filters transactions that have fewer confirmations.
+      # Parameter     Type     Required   Description
+      # skip          number   No         The starting index number to list from. Default is 0.
+      # limit         number   No         Max number of results to return in a single call (default=25, max=250)
+      # compact       boolean  No         Omit inputs and outputs in the transaction results
+      # minHeight     number   No         A lower limit of blockchain height at which the transaction was confirmed. Does not filter unconfirmed transactions.
+      # maxHeight     number   No         An upper limit of blockchain height at which the transaction was confirmed. Filters unconfirmed transactions if set.
+      # minConfirms   number   No         Only shows transactions with at least this many confirmations, filters transactions that have fewer confirmations.
       def list_wallet_transactions(wallet_id: default_wallet_id, params: {})
         call :get, "/wallet/#{wallet_id}/tx", params
       end
