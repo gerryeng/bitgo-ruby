@@ -66,8 +66,8 @@ module Bitgo
       # Parameter   Type     Required  Description
       # skip        number   No        The starting index number to list from. Default is 0.
       # limit       number   No        Max number of results to return in a single call (default=100, max=500)
-      def list_keychains(query: {})
-        call :get, '/keychain', query: query
+      def list_keychains(params: {})
+        call :get, '/keychain', params
       end
 
       # Bitgo express function
@@ -127,8 +127,8 @@ module Bitgo
       # getbalances   boolean  No         Set to true to return the “balance” field for each wallet.
       # limit         number   No         Max number of results to return in a single call (default=25, max=250)
       # skip          number   No         The starting index number to list from. Default is 0.
-      def list_wallets(query: {})
-        call :get, '/wallet', query: query
+      def list_wallets(params: {})
+        call :get, '/wallet', params
       end
 
       # QUERY Parameters
@@ -139,11 +139,11 @@ module Bitgo
       # minHeight     number   No         A lower limit of blockchain height at which the transaction was confirmed. Does not filter unconfirmed transactions.
       # maxHeight     number   No         An upper limit of blockchain height at which the transaction was confirmed. Filters unconfirmed transactions if set.
       # minConfirms   number   No         Only shows transactions with at least this many confirmations, filters transactions that have fewer confirmations.
-      def list_wallet_transactions(wallet_id: default_wallet_id, query: {})
-        call :get, "/wallet/#{wallet_id}/tx", query: query
+      def list_wallet_transactions(wallet_id: default_wallet_id, params: {})
+        call :get, "/wallet/#{wallet_id}/tx", params
       end
 
-      def get_wallet_transaction(wallet_id: default_wallet_id, tx_id:)
+      def get_wallet_transaction(tx_id, wallet_id: default_wallet_id)
         call :get, "/wallet/#{wallet_id}/tx/#{tx_id}"
       end
 
@@ -462,10 +462,10 @@ module Bitgo
 
       # Perform HTTP call
       # path parameter must being with a /
-      def call(method, path, params = {}, parse_response_as_json = true, with_auth_token = true, query: {})
+      def call(method, path, params = {}, parse_response_as_json = true, with_auth_token = true)
 
         # path must begin with slash
-        uri = URI(@end_point + path + generate_query(query))
+        uri = URI(@end_point + path)
 
         # Build the connection
         http = Net::HTTP.new(uri.host, uri.port)
@@ -476,8 +476,8 @@ module Bitgo
 
         request = nil
         if method == :get
+          uri.query = URI.encode_www_form(params) unless params.empty?
           request = Net::HTTP::Get.new(uri.request_uri)
-
         elsif method == :post
           request = Net::HTTP::Post.new(uri.request_uri)
         elsif method == :delete
@@ -488,7 +488,7 @@ module Bitgo
           raise 'Unsupported request method'
         end
 
-        request.body = params.to_json
+        request.body = params.to_json unless method == :get
 
         # Set JSON body
         request.add_field('Content-Type', 'application/json')
@@ -517,16 +517,6 @@ module Bitgo
         else
           return response.body
         end
-      end
-
-      def generate_query(queries)
-        return "" if queries.empty?
-        query = "?"
-        queries.each_with_index do |(key, value), index|
-          query += "&" if index > 0
-          query += "#{key.to_s}=#{value.to_s}"
-        end
-        return query
       end
     end
   end
