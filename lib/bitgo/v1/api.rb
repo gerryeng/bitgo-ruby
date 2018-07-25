@@ -62,8 +62,12 @@ module Bitgo
       # Keychains API
       ###############
 
-      def list_keychains
-        call :get, '/keychain'
+      # Query Parameters
+      # Parameter   Type     Required  Description
+      # skip        number   No        The starting index number to list from. Default is 0.
+      # limit       number   No        Max number of results to return in a single call (default=100, max=500)
+      def list_keychains(params: {})
+        call :get, '/keychain', params
       end
 
       # Bitgo express function
@@ -117,8 +121,30 @@ module Bitgo
       # Wallets API
       ###############
 
-      def list_wallets
-        call :get, '/wallet'
+      # QUERY Parameters
+      # Parameter     Type     Required   Description
+      # enterpriseId  string   No         Filter list by Enterprise ID
+      # getbalances   boolean  No         Set to true to return the “balance” field for each wallet.
+      # limit         number   No         Max number of results to return in a single call (default=25, max=250)
+      # skip          number   No         The starting index number to list from. Default is 0.
+      def list_wallets(params: {})
+        call :get, '/wallet', params
+      end
+
+      # QUERY Parameters
+      # Parameter     Type     Required   Description
+      # skip          number   No         The starting index number to list from. Default is 0.
+      # limit         number   No         Max number of results to return in a single call (default=25, max=250)
+      # compact       boolean  No         Omit inputs and outputs in the transaction results
+      # minHeight     number   No         A lower limit of blockchain height at which the transaction was confirmed. Does not filter unconfirmed transactions.
+      # maxHeight     number   No         An upper limit of blockchain height at which the transaction was confirmed. Filters unconfirmed transactions if set.
+      # minConfirms   number   No         Only shows transactions with at least this many confirmations, filters transactions that have fewer confirmations.
+      def list_wallet_transactions(wallet_id: default_wallet_id, params: {})
+        call :get, "/wallet/#{wallet_id}/tx", params
+      end
+
+      def get_wallet_transaction(tx_id, wallet_id: default_wallet_id)
+        call :get, "/wallet/#{wallet_id}/tx/#{tx_id}"
       end
 
       # wallet_simple_create
@@ -450,8 +476,8 @@ module Bitgo
 
         request = nil
         if method == :get
+          uri.query = URI.encode_www_form(params) unless params.empty?
           request = Net::HTTP::Get.new(uri.request_uri)
-
         elsif method == :post
           request = Net::HTTP::Post.new(uri.request_uri)
         elsif method == :delete
@@ -462,7 +488,7 @@ module Bitgo
           raise 'Unsupported request method'
         end
 
-        request.body = params.to_json
+        request.body = params.to_json unless method == :get
 
         # Set JSON body
         request.add_field('Content-Type', 'application/json')
@@ -492,8 +518,6 @@ module Bitgo
           return response.body
         end
       end
-
     end
-
   end
 end

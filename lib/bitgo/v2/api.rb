@@ -32,9 +32,13 @@ module Bitgo
       # Keychains API
       ###############
 
-      def list_keychains(coin: COIN_BTC)
+      # Query Parameters
+      # Parameter    Type       Required   Description
+      # limit        Integer    No         Max number of results in a single call. Defaults to 25.
+      # prevId       String     No         Continue iterating (provided by nextBatchPrevId in the previous list)
+      def list_keychains(coin: COIN_BTC, params: {})
         validate_coin!(coin)
-        call :get, "/#{coin}/key"
+        call :get, "/#{coin}/key", params
       end
 
       # Bitgo express function
@@ -63,6 +67,7 @@ module Bitgo
       end
 
       def get_keychain(keychain_id:, coin: COIN_BTC)
+        validate_coin!(coin)
         call :get, "/#{coin}/key/#{keychain_id}"
       end
 
@@ -70,9 +75,14 @@ module Bitgo
       # Wallets API
       ###############
 
-      def list_wallets(coin: COIN_BTC)
+      # Query Parameters
+      # Parameter   Type      Required   Description
+      # limit       Integer   No         Max number of results in a single call. Defaults to 25.
+      # prevId      String    No         Continue iterating wallets from this prevId as provided by nextBatchPrevId in the previous list
+      # allTokens   Boolean   No         Gets details of all tokens associated with this wallet. Only valid for eth/teth
+      def list_wallets(coin: COIN_BTC, params: {})
         validate_coin!(coin)
-        call :get, "/#{coin}/wallet"
+        call :get, "/#{coin}/wallet", params
       end
 
       # label: String  Yes Human-readable name for the wallet.
@@ -100,21 +110,16 @@ module Bitgo
       # pendingApprovals  pending transaction approvals on the wallet
       # confirmedBalance  the confirmed balance
       # balance the balance, including transactions with 0 confirmations
-      def get_wallet(wallet_id: default_wallet_id, coin: COIN_BTC)
+      #
+      # Query Parameters
+      # Parameter   Type       Required   Description
+      # allTokens   Boolean    No         Gets details of all tokens associated with this wallet. Only valid for eth/teth
+      def get_wallet(wallet_id: default_wallet_id, coin: COIN_BTC, params: {})
         validate_coin!(COIN_BTC)
-        call :get, "/#{coin}/wallet/#{wallet_id}"
+        call :get, "/#{coin}/wallet/#{wallet_id}", params
       end
 
-      # List Wallet Unspents
-      #                    Required?
-      # prevId       String   No  Continue iterating wallets from this prevId as provided by nextBatchPrevId in the previous list
-      # minValue     Integer  No  Ignore unspents smaller than this amount of satoshis
-      # maxValue     Integer  No  Ignore unspents larger than this amount of satoshis
-      # minHeight    Integer  No  Ignore unspents confirmed at a lower block height than the given minHeight
-      # minConfirms  Integer  No  Ignores unspents that have fewer than the given confirmations
-
       # Response:
-
       # id            The outpoint of the unspent (txid:vout)
       # address       The address that owns this unspent
       # value         Value of the unspent in satoshis
@@ -128,43 +133,77 @@ module Bitgo
       # redeemScript  The script defining the criteria to be satisfied to spend this unspent
       # isSegwit      A flag indicating whether this is a segwit unspent
       # witnessScript
-
-      def unspents(wallet_id: default_wallet_id, coin: COIN_BTC)
-        call :get, "/#{coin}/wallet/#{wallet_id}/unspents"
+      #
+      # Query Parameters
+      # Parameter   Type     Required   Description
+      # prevId      String   No         Continue iterating wallets from this prevId as provided by nextBatchPrevId in the previous list
+      # minValue    Integer  No         Ignore unspents smaller than this amount of satoshis
+      # maxValue    Integer  No         Ignore unspents larger than this amount of satoshis
+      # minHeight   Integer  No         Ignore unspents confirmed at a lower block height than the given minHeight
+      # minConfirms Integer  No         Ignores unspents that have fewer than the given confirmations
+      def unspents(wallet_id: default_wallet_id, coin: COIN_BTC, params: {})
+        validate_coin!(coin)
+        call :get, "/#{coin}/wallet/#{wallet_id}/unspents", params
       end
 
       def create_transaction(wallet_id: default_wallet_id, coin: COIN_BTC, params: {})
+        validate_coin!(coin)
         call :post, "/#{coin}/wallet/#{wallet_id}/tx/build", params
       end
 
       alias_method :build_transaction, :create_transaction
 
       def sign_transaction(wallet_id: default_wallet_id, coin: COIN_BTC, params: {})
+        validate_coin!(coin)
         params[:walletPassphrase] ||= default_wallet_passphrase
         call :post, "/#{coin}/wallet/#{wallet_id}/signtx", params
       end
 
       def send_transaction(wallet_id: default_wallet_id, coin: COIN_BTC, params: {})
+        validate_coin!(coin)
         call :post, "/#{coin}/wallet/#{wallet_id}/tx/send", params
       end
 
       # Gets a list of addresses which have been instantiated for a wallet using the New Address API.
-      def list_wallet_addresses(wallet_id:, coin: COIN_BTC)
+      # Query Parameters
+      # Parameter   Type     Required   Description
+      # limit       Number   No         The maximum number of addresses to be returned.
+      # prevId      String   No         Continue iterating (provided by nextBatchPrevId in the previous list)
+      # sortOrder   Number   No         Order the addresses by creation date. -1 is newest first, 1 is for oldest first.
+      def list_wallet_addresses(wallet_id: default_wallet_id, coin: COIN_BTC, params: {})
         validate_coin!(coin)
-        call :get, "/#{coin}/wallet/#{wallet_id}/addresses"
+        call :get, "/#{coin}/wallet/#{wallet_id}/addresses", params
       end
 
-      def list_wallet_transactions(wallet_id:, coin: COIN_BTC)
+      # Query Parameters
+      # Parameter   Type     Required   Description
+      # prevId      String   No         Continue iterating (provided by nextBatchPrevId in the previous list result)
+      # allTokens   Boolean  No         Gets details of all token transactions associated with this wallet. Only valid for eth/teth.
+      def list_wallet_transactions(wallet_id: default_wallet_id, coin: COIN_BTC, params: {})
         validate_coin!(coin)
-        call :get, "/#{coin}/wallet/#{wallet_id}/tx"
+        call :get, "/#{coin}/wallet/#{wallet_id}/tx", params
       end
 
-      def get_wallet_transaction(wallet_id:, txid:, coin: COIN_BTC)
+      def get_wallet_transaction(tx_id, wallet_id: default_wallet_id, coin: COIN_BTC)
         validate_coin!(coin)
-        call :get, "/#{coin}/wallet/#{wallet_id}/tx/#{txid}"
+        call :get, "/#{coin}/wallet/#{wallet_id}/tx/#{tx_id}"
       end
 
-      def create_address(wallet_id:, coin: COIN_BTC)
+      # Query Parameters
+      # Parameter   Type     Required   Description
+      # prevId      String   No         Continue iterating from this prevId (provided by nextBatchPrevId in the previous list)
+      # allTokens   Boolean  No         Gets transfers of all tokens associated with this wallet. Only valid for eth/teth.
+      def list_wallet_transfers(wallet_id: default_wallet_id, coin: COIN_BTC, params: {})
+        validate_coin!(coin)
+        call :get, "/#{coin}/wallet/#{wallet_id}/transfer", params
+      end
+
+      def get_wallet_transfer(tx_id_or_transfer_id, wallet_id: default_wallet_id, coin: COIN_BTC)
+        validate_coin!(coin)
+        call :get, "/#{coin}/wallet/#{wallet_id}/transfer/#{tx_id_or_transfer_id}"
+      end
+
+      def create_address(wallet_id: default_wallet_id, coin: COIN_BTC)
         validate_coin!(coin)
         call :post, "/#{coin}/wallet/#{wallet_id}/address/"
       end
@@ -212,6 +251,7 @@ module Bitgo
         target_wallet_unspents: nil,
         fee_tx_confirm_target: nil,
         message: nil,
+        comment: nil,
         coin: nil
       )
 
@@ -222,6 +262,12 @@ module Bitgo
 
         validate_coin!(coin)
 
+        # API v1 uses message, API v2 uses comment
+        if (message && comment) and (message != comment)
+          raise "message: #{message} and comment: #{comment} are both present, but they differ"
+        end
+        comment = comment || message
+
         params[:minValue] = min_value unless min_value.nil?
         params[:maxValue] = max_value unless max_value.nil?
         params[:sequenceId] = sequence_id unless sequence_id.nil?
@@ -231,7 +277,7 @@ module Bitgo
         params[:enforceMinConfirmsForChange] = enforce_min_confirms_for_change unless enforce_min_confirms_for_change.nil?
         params[:targetWalletUnspents] = target_wallet_unspents unless target_wallet_unspents.nil?
         params[:feeTxConfirmTarget] = fee_tx_confirm_target unless fee_tx_confirm_target.nil?
-        params[:message] = message unless message.nil?
+        params[:comment] = comment unless comment.nil?
 
         call :post, "/#{coin}/wallet/#{wallet_id}/sendmany", params
       end
@@ -245,7 +291,7 @@ module Bitgo
       # type        string  (Required)  type of Webhook, e.g. transaction
       # url       string  (Required)  valid http/https url for callback requests
       # numConfirmations  integer (Optional)  number of confirmations before triggering the webhook. If 0 or unspecified, requests will be sent to the callback endpoint will be called when the transaction is first seen and when it is confirmed.
-      def add_webhook(wallet_id:, type:, url:, confirmations: 0, coin: COIN_BTC)
+      def add_webhook(wallet_id: default_wallet_id, type:, url:, confirmations: 0, coin: COIN_BTC)
         validate_coin!(coin)
         add_webhook_params = {
           type: type,
@@ -256,7 +302,7 @@ module Bitgo
       end
 
 
-      def remove_webhook(wallet_id:, type:, url:, coin: COIN_BTC)
+      def remove_webhook(wallet_id: default_wallet_id, type:, url:, coin: COIN_BTC)
         validate_coin!(coin)
         remove_webhook_params = {
           type: type,
@@ -265,7 +311,7 @@ module Bitgo
         call :delete, "/#{coin}/wallet/#{wallet_id}/webhooks", remove_webhook_params
       end
 
-      def list_webhooks(wallet_id:, coin: COIN_BTC)
+      def list_webhooks(wallet_id: default_wallet_id, coin: COIN_BTC)
         validate_coin!(coin)
         call :get, "/#{coin}/wallet/#{wallet_id}/webhooks"
       end
@@ -277,6 +323,7 @@ module Bitgo
       # Get Transaction Details
 
       def transaction(tx_hash, coin: COIN_BTC, wallet_id: default_wallet_id)
+        validate_coin!(coin)
         call :get, "/#{coin}/wallet/#{wallet_id}/tx/#{tx_hash}"
       end
 
