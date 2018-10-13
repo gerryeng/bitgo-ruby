@@ -203,6 +203,14 @@ module Bitgo
         call :get, "/#{coin}/wallet/#{wallet_id}/transfer/#{tx_id_or_transfer_id}"
       end
 
+      # Parameter     Type      Description
+      # comment       String    comment to add
+      # id            String    transfer_id
+      def add_comment(transfer_id, wallet_id: default_wallet_id, coin: COIN_BTC, params: {})
+        validate_coin!(coin)
+        call :post, "/#{coin}/wallet/#{wallet_id}/transfer/#{transfer_id}/comment", params
+      end
+
       def create_address(wallet_id: default_wallet_id, coin: COIN_BTC)
         validate_coin!(coin)
         call :post, "/#{coin}/wallet/#{wallet_id}/address/"
