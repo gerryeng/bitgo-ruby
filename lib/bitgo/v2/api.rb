@@ -20,6 +20,12 @@ module Bitgo
         COIN_TXRP = 'txrp', # Ripple Testnet  Test
         COIN_LTC  = 'ltc',  # Litecoin Production Production
         COIN_TLTC = 'tltc', # Litecoin Testnet4 Test
+        COIN_ZEC  = 'zec',  # Zcash Production
+        COIN_TZEC = 'tzec', # Zcash Testnet
+        COIN_DASH  = 'dash',  # DASH Production
+        COIN_TDASH = 'tdash', # DASH Testnet
+        COIN_XLM  = 'xlm',  # Stellar Production
+        COIN_TXLM = 'txlm', # Stellar Testnet
         COIN_RMG  = 'rmg',  # Royal Mint Gold Production  Production
         COIN_TRMG = 'trmg', # Royal Mint Gold Testnet Test
       ]
