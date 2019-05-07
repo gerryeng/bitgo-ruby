@@ -9,8 +9,9 @@ module Bitgo
       LIVE = 'https://www.bitgo.com/api/v1'
       EXPRESS = 'http://127.0.0.1:3080/api/v1'
 
-      def initialize(end_point)
+      def initialize(end_point, proxy_url: nil)
         @end_point = end_point
+        @proxy_url = proxy_url
       end
 
       ###############
@@ -467,8 +468,15 @@ module Bitgo
         # path must begin with slash
         uri = URI(@end_point + path)
 
+        if @proxy_url
+          # p_scheme, p_username, p_password, p_host, p_port = @proxy_url.gsub(/(:|\/|@)/,' ').squeeze(' ').split§
+          # net_http_arguments += [phost, p_port, p_username, p_password]
+          proxy_uri = URI(@proxy_url)
+          proxy_args = [proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password]
+        end
+
         # Build the connection
-        http = Net::HTTP.new(uri.host, uri.port)
+        http = Net::HTTP.new(uri.host, uri.port, *proxy_args)
 
         if uri.scheme == 'https'
           http.use_ssl = true
