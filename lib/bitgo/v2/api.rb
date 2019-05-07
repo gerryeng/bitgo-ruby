@@ -212,9 +212,9 @@ module Bitgo
         call :post, "/#{coin}/wallet/#{wallet_id}/transfer/#{transfer_id}/comment", params
       end
 
-      def create_address(wallet_id: default_wallet_id, coin: COIN_BTC)
+      def create_address(wallet_id: default_wallet_id, coin: COIN_BTC, label: nil)
         validate_coin!(coin)
-        call :post, "/#{coin}/wallet/#{wallet_id}/address/"
+        call :post, "/#{coin}/wallet/#{wallet_id}/address", {label: label}
       end
 
       alias :add_address :create_address
