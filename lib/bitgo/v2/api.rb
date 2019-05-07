@@ -24,8 +24,9 @@ module Bitgo
         COIN_TRMG = 'trmg', # Royal Mint Gold Testnet Test
       ]
 
-      def initialize(end_point = LIVE)
+      def initialize(end_point = LIVE, proxy_url: nil)
         @end_point = end_point
+        @proxy_url = proxy_url
       end
 
       ###############
