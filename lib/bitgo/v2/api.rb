@@ -297,6 +297,57 @@ module Bitgo
         call :post, "/#{coin}/wallet/#{wallet_id}/sendmany", params
       end
 
+      # Accelerate Transaction (BitGo Express)
+      #
+      # Parameter                     Type     Required  Description
+      # cpfpTxIds                     Array    Yes       Array of string txids of the transactions to bump
+      # walletPassphrase              String   Yes       Passphrase to decrypt the wallet’s private key.
+      # cpfpFeeRate                   Integer  Yes       Desired effective feerate of the bumped transactions and the CPFP transaction in satoshi per kilobyte
+      # maxFee                        Integer  Yes       Maximum allowed fee for the CPFP transaction in satoshi
+      #
+      # Response
+      #
+      # Returns the newly created transaction description object.
+      #
+      # Field    Description
+      # transfer New transfer object
+      # txid     Unique transaction identifier
+      # tx       Encoded transaction hex (or base64 for XLM)
+      # status   Transfer status: Enum:"signed" "signed (suppressed)" "pendingApproval"
+      #
+      # https://www.bitgo.com/api/v2/#operation/express.wallet.acceleratetx
+      def accelerate_transaction(wallet_id: default_wallet_id,
+        wallet_passphrase: default_wallet_passphrase,
+        cpfp_tx_ids:,
+        cpfp_fee_rate:,
+        max_fee:,
+        coin: COIN_BTC
+      )
+        validate_coin!(coin)
+
+        cpfp_tx_ids = case cpfp_tx_ids
+        when Array
+          if cpfp_tx_ids != 1
+            raise ArgumentError, "cpfp_tx_ids accepts only a single txid at this stage"
+          end
+          cpfp_tx_ids
+        when String
+          [cpfp_tx_ids]
+        else
+          raise ArgumentError, "cpfp_tx_ids must be a txid string or an array with a single txid"
+        end
+
+        params = {
+          walletPassphrase: wallet_passphrase,
+          cpfpTxIds: cpfp_tx_ids,
+          cpfpFeeRate: cpfp_fee_rate,
+          maxFee: max_fee,
+          recipients: [], # This is not documented and passed as is: [] internally on a bitgo branch
+        }
+
+        call :post, "/#{coin}/wallet/#{wallet_id}/acceleratetx", params
+      end
+
       ###############
       # Webhook APIs
       ###############
