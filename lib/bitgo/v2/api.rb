@@ -225,6 +225,53 @@ module Bitgo
 
       alias :add_address :create_address
 
+      def send_coins(wallet_id: default_wallet_id,
+        wallet_passphrase: default_wallet_passphrase,
+        address:,
+        amount:,
+        min_value: nil,
+        max_value: nil,
+        # sequence_id: nil,
+        # fee_rate: nil,
+        # max_fee_rate: nil,
+        min_confirms: nil,
+        enforce_min_confirms_for_change: nil,
+        # target_wallet_unspents: nil,
+        # fee_tx_confirm_target: nil,
+        message: nil,
+        comment: nil,
+        coin: nil
+      )
+
+        params = {
+          walletPassphrase: wallet_passphrase,
+          address: address,
+          amount: amount
+        }
+
+        validate_coin!(coin)
+
+        # API v1 uses message, API v2 uses comment for sendmany, but send_coins in API v2 uses
+        # message again (for non-UTXO based coin support)
+        if (message && comment) and (message != comment)
+          raise "message: #{message} and comment: #{comment} are both present, but they differ"
+        end
+        message = message || comment
+
+        params[:minValue] = min_value unless min_value.nil?
+        params[:maxValue] = max_value unless max_value.nil?
+        # params[:sequenceId] = sequence_id unless sequence_id.nil?
+        # params[:feeRate] = fee_rate unless fee_rate.nil?
+        # params[:maxFeeRate] = max_fee_rate unless max_fee_rate.nil?
+        params[:minConfirms] = min_confirms unless min_confirms.nil?
+        params[:enforceMinConfirmsForChange] = enforce_min_confirms_for_change unless enforce_min_confirms_for_change.nil?
+        # params[:targetWalletUnspents] = target_wallet_unspents unless target_wallet_unspents.nil?
+        # params[:feeTxConfirmTarget] = fee_tx_confirm_target unless fee_tx_confirm_target.nil?
+        params[:message] = message unless message.nil?
+
+        call :post, "/#{coin}/wallet/#{wallet_id}/sendcoins", params
+      end
+
       # Send Transaction to Many (BitGo Express)
       #
       # Parameter                     Type     Required  Description
