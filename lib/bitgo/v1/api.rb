@@ -271,7 +271,7 @@ module Bitgo
         call :post, '/wallet/' + wallet_id + '/address/' + chain
       end
 
-      def send_coins_to_address(wallet_id: default_wallet_id, address:, amount:, wallet_passphrase: default_wallet_passphrase, min_confirmations: nil, fee: nil)
+      def send_coins(wallet_id: default_wallet_id, address:, amount:, wallet_passphrase: default_wallet_passphrase, min_confirmations: nil, fee: nil)
         call :post, '/sendcoins', {
           wallet_id: wallet_id,
           address: address,
@@ -281,6 +281,7 @@ module Bitgo
           fee: fee
         }
       end
+      alias_method :send_coins_to_address, :send_coins
 
       # Send Transaction to Many (BitGo Express)
       #
