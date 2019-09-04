@@ -240,7 +240,8 @@ module Bitgo
         # fee_tx_confirm_target: nil,
         message: nil,
         comment: nil,
-        coin: nil
+        coin: nil,
+        memo: nil # {type: 'id', value: '1'}
       )
 
         params = {
@@ -268,6 +269,7 @@ module Bitgo
         # params[:targetWalletUnspents] = target_wallet_unspents unless target_wallet_unspents.nil?
         # params[:feeTxConfirmTarget] = fee_tx_confirm_target unless fee_tx_confirm_target.nil?
         params[:message] = message unless message.nil?
+        params[:memo] = memo unless memo.nil?
 
         call :post, "/#{coin}/wallet/#{wallet_id}/sendcoins", params
       end
@@ -314,7 +316,8 @@ module Bitgo
         fee_tx_confirm_target: nil,
         message: nil,
         comment: nil,
-        coin: nil
+        coin: nil,
+        memo: nil # {type: 'id', value: '1'}
       )
 
         params = {
@@ -340,6 +343,7 @@ module Bitgo
         params[:targetWalletUnspents] = target_wallet_unspents unless target_wallet_unspents.nil?
         params[:feeTxConfirmTarget] = fee_tx_confirm_target unless fee_tx_confirm_target.nil?
         params[:comment] = comment unless comment.nil?
+        params[:memo] = memo unless memo.nil?
 
         call :post, "/#{coin}/wallet/#{wallet_id}/sendmany", params
       end
