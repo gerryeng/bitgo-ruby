@@ -399,6 +399,16 @@ module Bitgo
         call :post, "/#{coin}/wallet/#{wallet_id}/acceleratetx", params
       end
 
+      def fee_estimate(num_blocks: 2, coin: COIN_BTC)
+        validate_coin!(coin)
+
+        params = {
+          numBlocks: num_blocks,
+        }
+
+        call :get, "/#{coin}/tx/fee", params
+      end
+
       ###############
       # Webhook APIs
       ###############
